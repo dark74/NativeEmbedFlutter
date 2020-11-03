@@ -7,13 +7,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterEngineCache;
 import io.flutter.embedding.engine.dart.DartExecutor;
 import io.flutter.embedding.engine.renderer.FlutterUiDisplayListener;
+import io.flutter.plugins.GeneratedPluginRegistrant;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends FlutterActivity {
 
     FlutterEngine mFlutterEngien;
     FlutterView mFullterView;
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_flutter_root);
         //initFlutterEngine();
         mFlutterEngien = FlutterEngineCache.getInstance().get(Constants.FLUTTER_ENGINE_ID);
+        GeneratedPluginRegistrant.registerWith(mFlutterEngien);
         //mFullterView = createFlutterView();
         //mFullterView.attachToFlutterEngine(mFlutterEngien);
 

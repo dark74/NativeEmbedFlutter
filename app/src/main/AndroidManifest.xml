@@ -25,6 +25,11 @@
             android:name=".FlutterPageActivity"
             android:hardwareAccelerated="true"
             android:theme="@style/FlutterPageTheme" />
+
+        <activity
+            android:name=".NativePageActivity"
+            android:hardwareAccelerated="true"
+            android:theme="@style/FlutterPageTheme" />
     </application>
 
 </manifest>
