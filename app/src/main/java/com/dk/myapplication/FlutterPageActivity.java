@@ -8,6 +8,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.flutter.embedding.android.FlutterFragment;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterEngineCache;
@@ -16,7 +19,7 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
 public class FlutterPageActivity extends AppCompatActivity {
-
+    private static final int REQ_CODE = 13413;
     private FlutterEngine mFlutterEngine;
 
     @Override
@@ -59,11 +62,47 @@ public class FlutterPageActivity extends AppCompatActivity {
                             String nameArg = (String) call.argument("name");
                             Intent jumpIntent = new Intent(FlutterPageActivity.this, NativePageActivity.class);
                             jumpIntent.putExtra("name", nameArg);
-                            startActivity(jumpIntent);
+                            startActivityForResult(jumpIntent, REQ_CODE);
                         }
+                        break;
+                    case "goBackWithResult":
+                        if (call.hasArgument("message")) {
+                            String message = call.argument("message");
+                            Intent backIntent = new Intent();
+                            backIntent.putExtra("message", message);
+                            setResult(RESULT_OK, backIntent);
+                            finish();
+                        }
+                        break;
+                    case "goBack":
+                        // 返回上一页
+                        finish();
                         break;
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_CODE && resultCode == RESULT_OK) {
+            if (data != null) {
+                // NativePageActivity返回的数据
+                String message = data.getStringExtra("message");
+                Map<String, Object> param = new HashMap<>();
+                param.put("message", message);
+                // 创建MethodChannel
+                MethodChannel methodChannel = new MethodChannel(mFlutterEngine.getDartExecutor(), Constants.CHANNEL_FLUTTER);
+                // 调用Flutter端定义的方法
+                methodChannel.invokeMethod("onActivityResult", param);
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        MethodChannel methodChannel = new MethodChannel(mFlutterEngine.getDartExecutor(), Constants.CHANNEL_FLUTTER);
+        methodChannel.invokeMethod("goBack", null);
     }
 }

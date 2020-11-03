@@ -29,4 +29,11 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btn_back_flutter_page"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Back To Flutter"
+        android:textAllCaps="false" />
+
 </LinearLayout>

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.android.FlutterView;
@@ -17,6 +18,7 @@ import io.flutter.plugins.GeneratedPluginRegistrant;
 
 public class MainActivity extends FlutterActivity {
 
+    private static final int REQ_CODE = 12353;
     FlutterEngine mFlutterEngien;
     FlutterView mFullterView;
 
@@ -36,7 +38,7 @@ public class MainActivity extends FlutterActivity {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(MainActivity.this, FlutterPageActivity.class);
-                        startActivity(intent);
+                        startActivityForResult(intent, REQ_CODE);
                     }
                 });
     }
@@ -90,5 +92,14 @@ public class MainActivity extends FlutterActivity {
     protected void onStop() {
         super.onStop();
         mFlutterEngien.getLifecycleChannel().appIsPaused();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_CODE && resultCode == RESULT_OK) {
+            String message = data.getStringExtra("message");
+            Toast.makeText(this, "Flutter页面回来data:" + message, Toast.LENGTH_SHORT).show();
+        }
     }
 }
